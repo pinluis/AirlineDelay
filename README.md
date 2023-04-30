@@ -1,49 +1,19 @@
-# Install poetry on your device
+# Airline Delay Prediction
 
-## Install poetry on your device
+## Introduction
 
-```bash
-curl -sSL https://install.python-poetry.org | python
-```
+This is a project from [Sven Chen](https://github.com/Slyfter), [Petar Mladenov](https://github.com/petarzhaw) and [Luis Pinheiro](https://github.com/pinluis) for the course `Python-Grundlagen & Anwendung in Data Science (2023-FS)` at [ZHAW](https://www.zhaw.ch/en/university/) to predict flight delays. The data is from [Kaggle](https://www.kaggle.com/datasets/ulrikthygepedersen/airlines-delay).
 
-If you are not using a container, you can also install poetry with pip:
+## Data
 
-```bash
-pip install poetry
-```
+The data comes in a .csv file and is also stored in the data folder.
 
-## Configure Poetry to use local virtual envs
+## How to run
+
+The repository is setup to run in a devcontainer. To use the devcontainer, you need to have [Docker](https://www.docker.com/) and the `VSCode` extenstion [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) installed. Open the repository in VSCode and a pop up window will appear on the bottom right. Select "Reopen in Container" and wait for the container to build. If you don't see a pop up window, you can also use `CTRL + Shift + P` and search for "Reopen in Container". Once the container is built, you can open a terminal and run the following command to install the dependencies:
 
 ```bash
-poetry config virtualenvs.in-project true
+pip install -r requirements.txt
 ```
 
-## Install dependencies
-
-```bash
-poetry install
-```
-
-Check if you have a virtual environment. If so you wil see a folder called `.venv` in your project folder.
-
-## Work with Poetry
-
-To install a new dependency:
-
-```bash
-poetry add <package>
-```
-
-To remove a dependency:
-
-```bash
-poetry remove <package>
-```
-
-## Start virtual environment
-
-```bash
-poetry shell
-```
-
-You can exit the virtual environment with `exit`.
+## to be continued...
