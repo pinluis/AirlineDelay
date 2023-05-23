@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Delay Prediction</title>
+</head>
+<body>
+    <h1>Flight Delay Prediction</h1>
+    <form action="/predict" method="post">
+        <label for="airline">Airline:</label>
+        <input type="text" id="airline" name="airline"><br><br>
+
+        <label for="time">Time of Departure:</label>
+        <input type="text" id="time" name="time"><br><br>
+
+        <label for="airport_from">Departure Airport:</label>
+        <input type="text" id="airport_from" name="airport_from"><br><br>
+
+        <label for="airport_to">Arrival Airport:</label>
+        <input type="text" id="airport_to" name="airport_to"><br><br>
+
+        <label for="day_of_week">Day of the Week:</label>
+        <input type="text" id="day_of_week" name="day_of_week"><br><br>
+
+        <input type="submit" value="Predict">
+    </form>
+</body>
+</html>
