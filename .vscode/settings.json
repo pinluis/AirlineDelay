@@ -15,5 +15,9 @@
     "usernamehw",
     "venv"
   ],
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "python.formatting.provider": "none"
 }
