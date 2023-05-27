@@ -1,8 +1,6 @@
 from predict import predict_delay
 from flask import Flask, render_template, request, jsonify
-from sklearn.preprocessing import LabelEncoder
 import os
-import pickle
 import pandas as pd
 
 app = Flask(__name__, template_folder="frontend", static_folder="static")
@@ -39,8 +37,8 @@ class WeekdaySelection:
 df_airlines = pd.read_csv('../data/airlines_delay_cleaned_unique_airline.csv')
 df_airports = pd.read_csv('../data/airlines_delay_cleaned_unique_airport.csv')
 
-# Create a LabelEncoder object
-label_encoder = LabelEncoder()
+df_airlines.sort_values(by=['Airline'], inplace=True)
+df_airports.sort_values(by=['Airport'], inplace=True)
 
 @app.route("/")
 def home():
