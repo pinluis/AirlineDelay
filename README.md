@@ -16,4 +16,8 @@ The repository is setup to run in a devcontainer. To use the devcontainer, you n
 pip install -r requirements.txt
 ```
 
-## to be continued...
+## Correct flow of the project
+
+Our `Jupyter Notebooks` are numbered. By following the numbers, you will see the correct flow of the project. The `Jupyter Notebooks` are also commented, so you can follow the code and see what we are doing and why we are doing it.
+
+## To be continued
