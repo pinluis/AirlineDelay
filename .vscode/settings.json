@@ -11,13 +11,18 @@
     "matplotlib",
     "njpwerner",
     "pyplot",
+    "seaborn",
     "toolsai",
     "usernamehw",
     "venv"
   ],
   "files.eol": "\n",
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter"
-  },
-  "python.formatting.provider": "none"
+  "cSpell.ignoreWords": [
+    "Boxplot",
+    "boxplot",
+    "dataframe",
+    "histplot",
+    "selectbox",
+    "streamlit"
+  ]
 }
