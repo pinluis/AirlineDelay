@@ -25,6 +25,26 @@
             right: 10px;
             z-index: 100;
         }
+
+        .loading-gif {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .dark-mode .modal-content {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        .dark-mode .modal-header {
+            background-color: #23272b;
+            color: #fff;
+        }
+
+        .dark-mode .modal-footer {
+            background-color: #23272b;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -87,6 +107,34 @@
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Predict</button>
             </div>
+
+            <div class="modal fade" id="intermediateModal" tabindex="-1" aria-labelledby="intermediateModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <div id="intermediateAnimationContainer"></div>
+                            <p>Loading...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="resultModalLabel">Prediction Result</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="predictionResult" class="d-none"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 
@@ -119,18 +167,57 @@
         const timeInput = document.getElementById('time');
         const modalTimeInput = document.getElementById('modalTime');
         const confirmTimeButton = document.getElementById('confirmTime');
-
+    
         confirmTimeButton.addEventListener('click', function() {
             timeInput.value = modalTimeInput.value;
         });
-
+    
         const darkModeToggle = document.getElementById('darkModeToggle');
         darkModeToggle.addEventListener('change', function() {
             if (this.checked) {
                 document.body.classList.add('dark-mode');
+                document.getElementById('resultModal').classList.add('dark-mode');
+                document.getElementById('intermediateModal').classList.add('dark-mode');
             } else {
                 document.body.classList.remove('dark-mode');
+                document.getElementById('resultModal').classList.remove('dark-mode');
+                document.getElementById('intermediateModal').classList.remove('dark-mode');
             }
+        });
+    
+        const predictButton = document.querySelector('button[type="submit"]');
+        predictButton.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the form submission
+    
+            // Display the loading animation in the intermediate modal
+            const intermediateModal = new bootstrap.Modal(document.getElementById('intermediateModal'));
+            const intermediateAnimationContainer = document.getElementById('intermediateAnimationContainer');
+            intermediateAnimationContainer.innerHTML = '<img src="../static/images/loading.gif" alt="Loading" class="loading-gif" />';
+            intermediateModal.show();
+    
+            // Send the form data to the /predict route
+            const formData = new FormData(event.target.form);
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide the intermediate modal
+                intermediateModal.hide();
+    
+                // Show the result modal after a delay
+                setTimeout(() => {
+                    // Update the prediction result in the modal
+                    const predictionResult = document.getElementById('predictionResult');
+                    predictionResult.textContent = data.result;
+                    predictionResult.classList.remove('d-none');
+    
+                    // Show the result modal
+                    const resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
+                    resultModal.show();
+                }, 1000); // Delay for 1 second
+            });
         });
     </script>
 </body>
