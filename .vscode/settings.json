@@ -11,9 +11,18 @@
     "matplotlib",
     "njpwerner",
     "pyplot",
+    "seaborn",
     "toolsai",
     "usernamehw",
     "venv"
   ],
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "cSpell.ignoreWords": [
+    "Boxplot",
+    "boxplot",
+    "dataframe",
+    "histplot",
+    "selectbox",
+    "streamlit"
+  ]
 }
