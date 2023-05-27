@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request
+from predict import predict_delay
+from flask import Flask, render_template, request, jsonify
 from sklearn.preprocessing import LabelEncoder
 import os
 import pickle
 import pandas as pd
 
-app = Flask(__name__, template_folder="frontend")
+app = Flask(__name__, template_folder="frontend", static_folder="static")
 
 class TimeCalculator:
     @staticmethod
@@ -55,10 +56,6 @@ def home():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    # Load the models
-    with open('../Models/logistic_regression_model.pkl', 'rb') as file:
-        log_reg_model = pickle.load(file)
-
     # Extract hours and minutes from the selected time
     time = request.form['time']
     hours, minutes = map(int, time.split(':'))
@@ -71,30 +68,13 @@ def predict():
     weekday_selection = WeekdaySelection()
     weekday_selection.set_selected_weekday(request.form['day_of_week'])
 
-    data = {
-        'Time': [departure_time_in_minutes],
-        'Length': [request.form['length']],
-        'Airline': [request.form['airline']],        
-        'AirportFrom': [request.form['airport_from']],
-        'AirportTo': [request.form['airport_to']],
-        'DayOfWeek': [weekday_selection.get_selected_weekday()]
-    }
+    predict_delay(departure_time_in_minutes,request.form['length'],request.form['airline'],request.form['airport_from'],request.form['airport_to'],weekday_selection.get_selected_weekday())
 
-    # Fit the LabelEncoder to the unique airline values
-    label_encoder.fit(df_airlines['Airline'])
+    prediction_result = predict_delay(departure_time_in_minutes, request.form['length'], request.form['airline'],
+                                      request.form['airport_from'], request.form['airport_to'],
+                                      weekday_selection.get_selected_weekday())
 
-    # Create a DataFrame from the user inputs
-    df_userinput = pd.DataFrame(data)
-
-    # Perform one-hot encoding on categorical variables
-    df_encoded = pd.get_dummies(df_userinput, columns=['Airline', 'AirportFrom', 'AirportTo', 'Length'])
-
-    # Make a prediction using the loaded model and the encoded user inputs
-    prediction = log_reg_model.predict(df_encoded)
-
-    # return the prediction as a string
-    return "The prediction is: " + str(prediction[0])
-
+    return jsonify(result=prediction_result)
 
 if __name__ == "__main__":
     app.run(debug=True)
