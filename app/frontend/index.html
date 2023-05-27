@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Delay Prediction</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            transition: background-color 0.3s ease;
+        }
+
+        .dark-mode {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        .dark-mode input,
+        .dark-mode select {
+            background-color: #4b5156;
+            color: #fff;
+        }
+
+        .dark-mode-switch {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Flight Delay Prediction</h1>
+        <form action="/predict" method="post" class="row g-3">
+            <div class="col-md-6">
+                <label for="airline" class="form-label">Airline:</label>
+                <select id="airline" name="airline" class="form-select">
+                    <option value=""></option>  <!-- Empty option -->
+                    {% for airline in airlines %}
+                    <option value="{{ airline }}">{{ airline }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label for="time" class="form-label">Time of Departure:</label>
+                <div class="input-group">
+                    <input type="text" id="time" name="time" class="form-control" readonly>
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#timeModal">Select Time</button>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <label for="airport_from" class="form-label">Departure Airport:</label>
+                <select id="airport_from" name="airport_from" class="form-select">
+                    <option value=""></option>  <!-- Empty option -->
+                    {% for airport in airports %}
+                    <option value="{{ airport }}">{{ airport }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label for="airport_to" class="form-label">Arrival Airport:</label>
+                <select id="airport_to" name="airport_to" class="form-select">
+                    <option value=""></option>  <!-- Empty option -->
+                    {% for airport in airports %}
+                    <option value="{{ airport }}">{{ airport }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label for="length" class="form-label">Length of Flight in minutes:</label>
+                <input type="text" id="length" name="length" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+                <label for="day_of_week" class="form-label">Day of the Week:</label>
+                <select id="day_of_week" name="day_of_week" class="form-select">
+                    <option value=""></option>  <!-- Empty option -->
+                    {% for weekday in weekday_options %}
+                    <option value="{{ weekday }}">{{ weekday }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Predict</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="dark-mode-switch form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="darkModeToggle">
+        <label class="form-check-label" for="darkModeToggle">Dark Mode</label>
+    </div>
+
+    <!-- Time Modal -->
+    <div class="modal fade" id="timeModal" tabindex="-1" aria-labelledby="timeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="timeModalLabel">Select Time of Departure</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="time" id="modalTime" class="form-control" step="60">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="confirmTime">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const timeInput = document.getElementById('time');
+        const modalTimeInput = document.getElementById('modalTime');
+        const confirmTimeButton = document.getElementById('confirmTime');
+
+        confirmTimeButton.addEventListener('click', function() {
+            timeInput.value = modalTimeInput.value;
+        });
+
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        });
+    </script>
+</body>
+</html>
