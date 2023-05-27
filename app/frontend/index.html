@@ -50,10 +50,10 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Flight Delay Prediction</h1>
-        <form action="/predict" method="post" class="row g-3">
+        <form action="/predict" method="post" class="row g-3" id="predictionForm">
             <div class="col-md-6">
                 <label for="airline" class="form-label">Airline:</label>
-                <select id="airline" name="airline" class="form-select">
+                <select id="airline" name="airline" class="form-select" required>
                     <option value=""></option>  <!-- Empty option -->
                     {% for airline in airlines %}
                     <option value="{{ airline }}">{{ airline }}</option>
@@ -64,14 +64,14 @@
             <div class="col-md-6">
                 <label for="time" class="form-label">Time of Departure:</label>
                 <div class="input-group">
-                    <input type="text" id="time" name="time" class="form-control" readonly>
+                    <input type="text" id="time" name="time" class="form-control" readonly required>
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#timeModal">Select Time</button>
                 </div>
             </div>
 
             <div class="col-md-6">
                 <label for="airport_from" class="form-label">Departure Airport:</label>
-                <select id="airport_from" name="airport_from" class="form-select">
+                <select id="airport_from" name="airport_from" class="form-select" required>
                     <option value=""></option>  <!-- Empty option -->
                     {% for airport in airports %}
                     <option value="{{ airport }}">{{ airport }}</option>
@@ -81,7 +81,7 @@
 
             <div class="col-md-6">
                 <label for="airport_to" class="form-label">Arrival Airport:</label>
-                <select id="airport_to" name="airport_to" class="form-select">
+                <select id="airport_to" name="airport_to" class="form-select" required>
                     <option value=""></option>  <!-- Empty option -->
                     {% for airport in airports %}
                     <option value="{{ airport }}">{{ airport }}</option>
@@ -91,12 +91,12 @@
 
             <div class="col-md-6">
                 <label for="length" class="form-label">Length of Flight in minutes:</label>
-                <input type="text" id="length" name="length" class="form-control">
+                <input type="text" id="length" name="length" class="form-control" required>
             </div>
 
             <div class="col-md-6">
                 <label for="day_of_week" class="form-label">Day of the Week:</label>
-                <select id="day_of_week" name="day_of_week" class="form-select">
+                <select id="day_of_week" name="day_of_week" class="form-select" required>
                     <option value=""></option>  <!-- Empty option -->
                     {% for weekday in weekday_options %}
                     <option value="{{ weekday }}">{{ weekday }}</option>
@@ -105,7 +105,7 @@
             </div>
 
             <div class="col-12">
-                <button type="submit" class="btn btn-primary">Predict</button>
+                <button type="submit" class="btn btn-primary" id="predictButton" disabled>Predict</button>
             </div>
 
             <div class="modal fade" id="intermediateModal" tabindex="-1" aria-labelledby="intermediateModalLabel" aria-hidden="true">
@@ -167,9 +167,11 @@
         const timeInput = document.getElementById('time');
         const modalTimeInput = document.getElementById('modalTime');
         const confirmTimeButton = document.getElementById('confirmTime');
+        const predictButton = document.getElementById('predictButton');
     
         confirmTimeButton.addEventListener('click', function() {
             timeInput.value = modalTimeInput.value;
+            validateForm();
         });
     
         const darkModeToggle = document.getElementById('darkModeToggle');
@@ -185,39 +187,49 @@
             }
         });
     
-        const predictButton = document.querySelector('button[type="submit"]');
-        predictButton.addEventListener('click', function(event) {
+        const form = document.getElementById('predictionForm');
+        form.addEventListener('input', validateForm);
+    
+        function validateForm() {
+            const isTimeValid = timeInput.value.trim() !== '';
+            const isFormValid = form.checkValidity() && isTimeValid;
+            predictButton.disabled = !isFormValid;
+        }
+    
+        form.addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the form submission
     
-            // Display the loading animation in the intermediate modal
-            const intermediateModal = new bootstrap.Modal(document.getElementById('intermediateModal'));
-            const intermediateAnimationContainer = document.getElementById('intermediateAnimationContainer');
-            intermediateAnimationContainer.innerHTML = '<img src="../static/images/loading.gif" alt="Loading" class="loading-gif" />';
-            intermediateModal.show();
+            if (form.checkValidity() && timeInput.value.trim() !== '') {
+                // Display the loading animation in the intermediate modal
+                const intermediateModal = new bootstrap.Modal(document.getElementById('intermediateModal'));
+                const intermediateAnimationContainer = document.getElementById('intermediateAnimationContainer');
+                intermediateAnimationContainer.innerHTML = '<img src="../static/images/loading.gif" alt="Loading" class="loading-gif" />';
+                intermediateModal.show();
     
-            // Send the form data to the /predict route
-            const formData = new FormData(event.target.form);
-            fetch('/predict', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Hide the intermediate modal
-                intermediateModal.hide();
+                // Send the form data to the /predict route
+                const formData = new FormData(form);
+                fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide the intermediate modal
+                    intermediateModal.hide();
     
-                // Show the result modal after a delay
-                setTimeout(() => {
-                    // Update the prediction result in the modal
-                    const predictionResult = document.getElementById('predictionResult');
-                    predictionResult.textContent = data.result;
-                    predictionResult.classList.remove('d-none');
+                    // Show the result modal after a delay
+                    setTimeout(() => {
+                        // Update the prediction result in the modal
+                        const predictionResult = document.getElementById('predictionResult');
+                        predictionResult.textContent = data.result;
+                        predictionResult.classList.remove('d-none');
     
-                    // Show the result modal
-                    const resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
-                    resultModal.show();
-                }, 1000); // Delay for 1 second
-            });
+                        // Show the result modal
+                        const resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
+                        resultModal.show();
+                    }, 1000); // Delay for 1 second
+                });
+            }
         });
     </script>
 </body>
