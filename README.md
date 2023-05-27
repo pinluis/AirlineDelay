@@ -20,4 +20,17 @@ pip install -r requirements.txt
 
 Our `Jupyter Notebooks` are numbered. By following the numbers, you will see the correct flow of the project. The `Jupyter Notebooks` are also commented, so you can follow the code and see what we are doing and why we are doing it.
 
-## To be continued
+## Run app locally
+
+To run the app locally, change the directory of your CLI to the app.py and run the flask application using the 'flask run' command. The app is going to run on the port 5000 and can be closed with `CTRL + C`.
+
+```bash
+cd app
+```
+
+```bash
+flask run
+```
+
+
+
