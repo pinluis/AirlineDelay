@@ -32,5 +32,8 @@ cd app
 flask run
 ```
 
+## Presentation slides
+
+We have created a presentation for the project. You can find the slides in the `Slides` folder.
 
 
